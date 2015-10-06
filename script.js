@@ -3,6 +3,7 @@
 var game = new Game();
 var board = new Board();
 var block = RandomBlock(0, 0);
+document.getElementById("score").innerHTML = board.score;
 game.draw(block);
 //tetris.draw(300,300);
 window.addEventListener("keydown", this.check, false);
