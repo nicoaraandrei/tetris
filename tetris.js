@@ -152,8 +152,10 @@ function checkCollision(obj1, obj2) {
 }
 
 function checkandclearlines(obj1) {
+    var count = 0;
     for (var i = 0; i < obj1.shape.length; i++) {
         isFilled = true;
+        count++;
         for (var j = 0; j < obj1.shape[i].length; j++) {
             if (obj1.shape[i][j] == 0) {
                 isFilled = false;
@@ -169,6 +171,7 @@ function checkandclearlines(obj1) {
             game.draw(obj1);
         }
     }
+    obj1.score += 50 * count;
 }
 
 function Board() {
@@ -179,6 +182,7 @@ function Board() {
         row: 0,
         col: 0
     };
+    this.score = 0;
 }
 
 function O(x, y) {

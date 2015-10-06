@@ -1,0 +1,34 @@
+{
+    "rules": {
+        "camelcase": [2, {"properties": "always"}],
+        "indent": [
+            2,
+            4
+        ],
+        "quotes": [
+            2,
+            "double"
+        ],
+        "linebreak-style": [
+            2,
+            "unix"
+        ],
+        "semi": [
+            2,
+            "always"
+        ],
+        "no-console": 0,
+        "block-scoped-var": 2,
+        "no-undef-init": 2
+    },
+    "globals": {
+        "$": false,
+        "Vex": false,
+        "HashSet": false,
+        "Queue": false
+    },
+    "env": {
+        "browser": true
+    },
+    "extends": "eslint:recommended"
+}
