@@ -3,7 +3,7 @@
 var game = new Game();
 var board = new Board();
 var block = RandomBlock(0, 0);
-document.getElementById("score").innerHTML = board.score;
+document.getElementById("score").innerHTML = "Score: " + board.score;
 game.draw(block);
 //tetris.draw(300,300);
 window.addEventListener("keydown", this.check, false);
@@ -30,7 +30,7 @@ function blockfall() {
         */
         checkandclearlines(board);
         board.score += 10;
-        document.getElementById("score").innerHTML = board.score;
+        document.getElementById("score").innerHTML = "Score: " + board.score;
         block = RandomBlock(0, 0);
         game.draw(block);
         game.draw(board);
