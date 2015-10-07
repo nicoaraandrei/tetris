@@ -3,9 +3,10 @@
 var game = new Game();
 var board = new Board();
 var block = RandomBlock(0, 0);
+var next_block = RandomBlock(0, 0);
 document.getElementById("score").innerHTML = "Score: " + board.score;
 game.draw(block);
-//tetris.draw(300,300);
+game.draw_next(next_block);
 window.addEventListener("keydown", this.check, false);
 
 var timer = setInterval(onTimerTick, 500); // 33 milliseconds = ~ 30 frames per sec
@@ -22,24 +23,26 @@ function blockfall() {
     game.draw(board);
     if (checkCollision(block, board)) {
         block.potentialpos.row -= 1;
+
         addtoBoard(block, board);
-        /*
-        for (var i = 0; i < board.shape.length; i++) {
-            console.log(board.shape[i]);
-        }
-        */
         checkandclearlines(board);
         board.score += 10;
         document.getElementById("score").innerHTML = "Score: " + board.score;
-        block = RandomBlock(0, 0);
+
+        block = next_block;
+        game.clean_next();
+        next_block = RandomBlock(0, 0);
+
+        game.clean(board);
         game.draw(block);
+        game.draw_next(next_block);
         game.draw(board);
+
         if (checkCollision(block, board)) {
 
             clearInterval(timer);
             alert("YOU LOST!");
         }
-        //block = new I(0,8);
     } else {
         game.clean(block);
         block.down();
@@ -51,7 +54,7 @@ function blockfall() {
 function check(e) {
     //console.log(e.keyCode);
     if (e.keyCode == "82") {
-        //  tetris.rotate(90);
+        //rotation
         var oldrot = block.rot;
         block.nextrotation = block.rotate();
         if (checkRotationCollision(block, board)) {
@@ -64,7 +67,7 @@ function check(e) {
         }
     }
     if (e.keyCode == "37") {
-        //  tetris.left();
+        //left
         block.potentialpos.col -= 1;
         if (checkHorizontalCollision(block, board)) {
             block.potentialpos.col += 1;
@@ -76,7 +79,7 @@ function check(e) {
 
     }
     if (e.keyCode == "39") {
-        //  tetris.right();
+        //right
         block.potentialpos.col += 1;
         if (checkHorizontalCollision(block, board)) {
             block.potentialpos.col -= 1;
@@ -87,15 +90,11 @@ function check(e) {
         }
     }
     if (e.keyCode == "40") {
-        //  tetris.down();
+        //down
         blockfall();
     }
-    //console.log(tetris.x + ":" + tetris.y);
 }
 
 function onTimerTick() {
-    //tetris.down();
-    //console.log(board.rows + " : " + board.cols);
     blockfall();
-
 }

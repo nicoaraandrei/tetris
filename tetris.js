@@ -31,8 +31,8 @@ function RandomBlock(x, y) {
 }
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
+    var letters = "0123456789ABCDEF".split("");
+    var color = "#";
     for (var i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
@@ -40,13 +40,11 @@ function getRandomColor() {
 }
 
 function Game() {
-    this.draw = function(obj) {
+    this.draw_next = function(obj) {
         for (var i = 0; i < obj.shape.length; i++) {
-            //console.log("i: " + i);
             for (var j = 0; j < obj.shape[i].length; j++) {
-                //console.log("j: " + obj.shape[i].length);
                 if (obj.shape[i][j] !== 0) {
-                    $('canvas').drawRect({
+                    $("canvas.canvas2").drawRect({
                         fillStyle: obj.color,
                         x: (j + obj.pos.col + 1) * 20 - 10,
                         y: (i + obj.pos.row + 1) * 20 - 10,
@@ -57,15 +55,45 @@ function Game() {
             }
         }
     };
+
+    this.clean_next = function() {
+        $("canvas.canvas2").clearCanvas({
+            x: 40,
+            y: 40,
+            width: 80,
+            height: 80
+        });
+    };
+
+    this.draw = function(obj) {
+        var color;
+        for (var i = 0; i < obj.shape.length; i++) {
+            for (var j = 0; j < obj.shape[i].length; j++) {
+                if (obj.shape[i][j] !== 0) {
+                    if (obj instanceof Board) {
+
+                        color = obj.colors[i][j];
+                    } else {
+                        color = obj.color;
+                    }
+                    $("canvas.canvas1").drawRect({
+                        fillStyle: color,
+                        x: (j + obj.pos.col + 1) * 20 - 10,
+                        y: (i + obj.pos.row + 1) * 20 - 10,
+                        width: 20,
+                        height: 20
+                    });
+                }
+            }
+        }
+    };
+
     this.clean = function(obj) {
 
         for (var i = 0; i < obj.shape.length; i++) {
-            //console.log("i: " + i);
             for (var j = 0; j < obj.shape[i].length; j++) {
-                //console.log("j: " + obj.shape[i].length);
                 if (obj.shape[i][j] !== 0) {
-                    $('canvas').clearCanvas({
-                        fillStyle: getRandomColor(),
+                    $("canvas.canvas1").clearCanvas({
                         x: (j + obj.pos.col + 1) * 20 - 10,
                         y: (i + obj.pos.row + 1) * 20 - 10,
                         width: 20,
@@ -80,8 +108,9 @@ function Game() {
 function addtoBoard(obj1, obj2) {
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
-            if (obj1.shape[i][j] != 0) {
+            if (obj1.shape[i][j] !== 0) {
                 obj2.shape[i + obj1.pos.row][j + obj1.pos.col] = obj1.shape[i][j];
+                obj2.colors[i + obj1.pos.row][j + obj1.pos.col] = obj1.color;
             }
         }
     }
@@ -90,7 +119,7 @@ function addtoBoard(obj1, obj2) {
 function checkRotationCollision(obj1, obj2) {
     for (var i = 0; i < obj1.nextrotation.length; i++) {
         for (var j = 0; j < obj1.nextrotation[i].length; j++) {
-            if (obj1.nextrotation[i][j] != 0) {
+            if (obj1.nextrotation[i][j] !== 0) {
                 if (i + obj1.potentialpos.col < 0) {
                     return true;
                 }
@@ -99,7 +128,7 @@ function checkRotationCollision(obj1, obj2) {
                     return true;
                 }
                 //check collision with the board
-                if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] != 0) {
+                if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] !== 0) {
                     return true;
                 }
             }
@@ -110,8 +139,7 @@ function checkRotationCollision(obj1, obj2) {
 function checkHorizontalCollision(obj1, obj2) {
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
-            if (obj1.shape[i][j] != 0) {
-                //console.log("potential col:" + obj1.potentialpos.col);
+            if (obj1.shape[i][j] !== 0) {
                 //check collision with left wall
                 if (obj1.potentialpos.col < -1) {
                     return true;
@@ -121,7 +149,7 @@ function checkHorizontalCollision(obj1, obj2) {
                     return true;
                 }
                 //check collision with the board
-                if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] != 0) {
+                if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] !== 0) {
                     return true;
                 }
             }
@@ -130,18 +158,15 @@ function checkHorizontalCollision(obj1, obj2) {
 }
 
 function checkCollision(obj1, obj2) {
-    //console.log("Ravioli Ravioli: " + obj1.potentialpos.row + " : " + obj1.potentialpos.col);
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
-            if (obj1.shape[i][j] != 0) {
+            if (obj1.shape[i][j] !== 0) {
                 //check if block is below field
                 if (i + obj1.potentialpos.row >= obj2.shape.length) {
                     return true;
                 }
                 //check if colides a tile
-                else if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] != 0) {
-                    //console.log("GIVE ME THE FORMUOLI");
-                    //console.log("ravioli: " + obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col]);
+                else if (obj2.shape[i + obj1.potentialpos.row][j + obj1.potentialpos.col] !== 0) {
                     return true;
                 }
 
@@ -156,7 +181,7 @@ function checkandclearlines(obj1) {
     for (var i = 0; i < obj1.shape.length; i++) {
         var isFilled = true;
         for (var j = 0; j < obj1.shape[i].length; j++) {
-            if (obj1.shape[i][j] == 0) {
+            if (obj1.shape[i][j] === 0) {
                 isFilled = false;
             }
         }
@@ -178,6 +203,8 @@ function Board() {
     this.shape = Array.matrix(24, 17, 0);
     this.rows = 24;
     this.cols = 17;
+    this.colors = Array.matrix(24, 17, "#111111");
+
     this.pos = {
         row: 0,
         col: 0

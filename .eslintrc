@@ -1,9 +1,10 @@
 {
     "rules": {
-        "camelcase": [2, {"properties": "always"}],
+        "no-unused-vars": [0, {"vars": "local", "args": "after-used"}],
         "indent": [
             2,
-            4
+            4,
+            8
         ],
         "quotes": [
             2,
