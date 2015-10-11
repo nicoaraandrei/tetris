@@ -1,3 +1,4 @@
+//Create a 2D array
 Array.matrix = function(numrows, numcols, initial) {
     var arr = [];
     for (var i = 0; i < numrows; ++i) {
@@ -10,6 +11,7 @@ Array.matrix = function(numrows, numcols, initial) {
     return arr;
 };
 
+//return a random block object
 function RandomBlock(x, y) {
     var option = Math.floor(Math.random() * 7) + 1;
     switch (option) {
@@ -30,16 +32,19 @@ function RandomBlock(x, y) {
     }
 }
 
+//return a random hex color
 function getRandomColor() {
     var letters = "0123456789ABCDEF".split("");
     var color = "#";
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+    for (var i = 0; i < 3; i++) {
+        color += letters[Math.floor(Math.random() * 14)];
     }
     return color;
 }
 
+//main game class
 function Game() {
+    //draw the next block in the small canvas 
     this.draw_next = function(obj) {
         for (var i = 0; i < obj.shape.length; i++) {
             for (var j = 0; j < obj.shape[i].length; j++) {
@@ -56,6 +61,7 @@ function Game() {
         }
     };
 
+    //clean the next block in the small canvas
     this.clean_next = function() {
         $("canvas.canvas2").clearCanvas({
             x: 40,
@@ -65,6 +71,7 @@ function Game() {
         });
     };
 
+    //draw an object on the big canvas
     this.draw = function(obj) {
         var color;
         for (var i = 0; i < obj.shape.length; i++) {
@@ -88,6 +95,7 @@ function Game() {
         }
     };
 
+    //clean an object from the big canvas
     this.clean = function(obj) {
 
         for (var i = 0; i < obj.shape.length; i++) {
@@ -105,6 +113,7 @@ function Game() {
     };
 }
 
+//adds a block in the board array
 function addtoBoard(obj1, obj2) {
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
@@ -116,6 +125,7 @@ function addtoBoard(obj1, obj2) {
     }
 }
 
+//checks the block's collision with the wall/board when rotating
 function checkRotationCollision(obj1, obj2) {
     for (var i = 0; i < obj1.nextrotation.length; i++) {
         for (var j = 0; j < obj1.nextrotation[i].length; j++) {
@@ -136,6 +146,7 @@ function checkRotationCollision(obj1, obj2) {
     }
 }
 
+//checks block's collision with the wall/board when going left or right
 function checkHorizontalCollision(obj1, obj2) {
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
@@ -157,6 +168,7 @@ function checkHorizontalCollision(obj1, obj2) {
     }
 }
 
+//checks block's collision with the wall's/board's floor
 function checkCollision(obj1, obj2) {
     for (var i = 0; i < obj1.shape.length; i++) {
         for (var j = 0; j < obj1.shape[i].length; j++) {
@@ -176,6 +188,7 @@ function checkCollision(obj1, obj2) {
     return false;
 }
 
+//clears the line when a block fills it
 function checkandclearlines(obj1) {
     var count = 0;
     for (var i = 0; i < obj1.shape.length; i++) {
@@ -212,24 +225,38 @@ function Board() {
     this.score = 0;
 }
 
-function O(x, y) {
-    this.shape = [
-        [1, 1],
-        [1, 1]
-    ];
+function Block(x, y) {
+    this.x = x;
+    this.y = y;
+    this.rot = 0;
+    this.nextrotation = 0;
+    this.rotations = [];
+    this.shape = this.rotations[this.rot];
+    this.color = getRandomColor();
+
     this.pos = {
-        row: x,
-        col: y
+        row: this.x,
+        col: this.y
     };
 
     this.potentialpos = {
-        row: x,
-        col: y
+        row: this.x,
+        col: this.y
     };
 
-    this.rotate = function() {};
+    this.setpos = function(x, y) {
+        this.x = x;
+        this.y = y;
+        this.pos = {
+            row: this.x,
+            col: this.y
+        };
 
-    this.color = getRandomColor();
+        this.potentialpos = {
+            row: this.x,
+            col: this.y
+        };
+    }
 
     this.left = function() {
         this.potentialpos.col -= 1;
@@ -243,11 +270,21 @@ function O(x, y) {
         this.pos.row = this.potentialpos.row;
         this.pos.col = this.potentialpos.col;
     };
+
 }
 
-function I(x, y) {
+Block.prototype.rotate = function(rot, nr_rot) {
+    if (rot == nr_rot) {
+        rot = 0;
+    } else {
+        rot++;
+    }
+    console.log("rot: " + rot);
+    return rot;
+};
 
-    this.rot = Math.floor(Math.random() * 2);
+function I(x, y) {
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -264,47 +301,39 @@ function I(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 1) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 1);
         return this.rotations[this.rot];
     };
+}
 
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
 
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
+function O(x, y) {
 
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
+    Block.call(this, x, y);
+
+    this.rotations = [
+        [
+            [1, 1],
+            [1, 1]
+        ],
+        [
+            [1, 1],
+            [1, 1]
+        ]
+    ];
+
+    this.shape = this.rotations[0];
+
+    this.rotate = function() {
+        this.rot = Block.prototype.rotate(this.rot, 1);
+        return this.rotations[this.rot];
     };
 }
 
 function J(x, y) {
 
-    this.rot = Math.floor(Math.random() * 4);
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -332,47 +361,15 @@ function J(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 3) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 3);
         return this.rotations[this.rot];
-    };
-
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
-
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
-
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
     };
 }
 
 function L(x, y) {
 
-    this.rot = Math.floor(Math.random() * 4);
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -400,47 +397,15 @@ function L(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 3) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 3);
         return this.rotations[this.rot];
-    };
-
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
-
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
-
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
     };
 }
 
 function T(x, y) {
 
-    this.rot = Math.floor(Math.random() * 4);
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -468,47 +433,15 @@ function T(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 3) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        //console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 3);
         return this.rotations[this.rot];
-    };
-
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
-
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
-
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
     };
 }
 
 function S(x, y) {
 
-    this.rot = Math.floor(Math.random() * 2);
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -525,47 +458,15 @@ function S(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 1) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 1);
         return this.rotations[this.rot];
-    };
-
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
-
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
-
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
     };
 }
 
 function Z(x, y) {
 
-    this.rot = Math.floor(Math.random() * 2);
+    Block.call(this, x, y);
 
     this.rotations = [
         [
@@ -582,40 +483,8 @@ function Z(x, y) {
 
     this.shape = this.rotations[this.rot];
 
-    this.pos = {
-        row: x,
-        col: y
-    };
-
-    this.potentialpos = {
-        row: x,
-        col: y
-    };
-
-    this.color = getRandomColor();
-
-    this.nextrotation = 0;
-
     this.rotate = function() {
-        if (this.rot == 1) {
-            this.rot = 0;
-        } else {
-            this.rot++;
-        }
-        console.log("rot: " + this.rot);
+        this.rot = Block.prototype.rotate(this.rot, 1);
         return this.rotations[this.rot];
-    };
-
-    this.left = function() {
-        this.potentialpos.col -= 1;
-    };
-
-    this.right = function() {
-        this.potentialpos.col += 1;
-    };
-
-    this.down = function() {
-        this.pos.row = this.potentialpos.row;
-        this.pos.col = this.potentialpos.col;
     };
 }
