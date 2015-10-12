@@ -1,0 +1,29 @@
+canvas {
+    background-color: #E6E6FA;
+}
+
+#container {
+    width: 430px;
+    margin: 0 auto;
+}
+
+.canvas1,
+.info {
+    float: left;
+}
+
+.info {
+    margin-left: 10px;
+}
+
+.clear-both {
+    clear: both;
+}
+
+#score {
+    color: white;
+    font-size: 30px;
+    font-weight: 900;
+    font-family: Helvetica, Arial;
+    margin: 10px 0;
+}

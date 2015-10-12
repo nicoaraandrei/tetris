@@ -4,30 +4,17 @@
 <head>
     <meta charset="utf-8">
     <title>Tetris</title>
-    <style>
-    #element1 {
-        float: left;
-    }
-    
-    #element2 {
-        padding-left: 20px;
-        float: left;
-    }
-    </style>
+    <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body background="http://7-themes.com/data_images/out/21/6839204-gradient-background.jpg">
-    <div id="element1">
+    <div id="container">
         <canvas class="canvas1" width="340" height="480"></canvas>
-    </div>
-    <div id="element2">
-        Next piece:
-        <br>
-        <br>
-        <canvas class="canvas2" width="80" height="80"></canvas>
-        <br>
-        <br>
-        <p id="score">Score: </p>
+        <div class="info">
+            <canvas class="canvas2" width="80" height="80"></canvas>
+            <p id="score"></p>
+        </div>
+        <div class="clear-both"></div>
     </div>
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
     <script src="jcanvas.min.js"></script>
