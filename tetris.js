@@ -44,7 +44,7 @@ function getRandomColor() {
 
 //main game class
 function Game() {
-    //draw the next block in the small canvas 
+    //draw the next block in the small canvas
     this.draw_next = function(obj) {
         for (var i = 0; i < obj.shape.length; i++) {
             for (var j = 0; j < obj.shape[i].length; j++) {
@@ -271,21 +271,19 @@ function Block(x, y) {
         this.pos.col = this.potentialpos.col;
     };
 
-}
-
-Block.prototype.rotate = function(rot, nr_rot) {
-    if (rot == nr_rot) {
-        rot = 0;
-    } else {
-        rot++;
+    this.rotate = function() {
+        if (this.rot == this.nr_rot) {
+            this.rot = 0;
+        } else {
+            this.rot++;
+        }
+        return this.rotations[this.rot];
     }
-    console.log("rot: " + rot);
-    return rot;
-};
+}
 
 function I(x, y) {
     Block.call(this, x, y);
-
+    this.nr_rot = 1;
     this.rotations = [
         [
             [1],
@@ -298,20 +296,12 @@ function I(x, y) {
             [1, 1, 1, 1]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 1);
-        return this.rotations[this.rot];
-    };
 }
 
-
 function O(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 1;
     this.rotations = [
         [
             [1, 1],
@@ -322,19 +312,12 @@ function O(x, y) {
             [1, 1]
         ]
     ];
-
     this.shape = this.rotations[0];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 1);
-        return this.rotations[this.rot];
-    };
 }
 
 function J(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 3;
     this.rotations = [
         [
             [0, 1],
@@ -358,19 +341,12 @@ function J(x, y) {
             [0, 0, 1]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 3);
-        return this.rotations[this.rot];
-    };
 }
 
 function L(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 3;
     this.rotations = [
         [
             [1, 0],
@@ -394,19 +370,12 @@ function L(x, y) {
             [1, 1, 1]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 3);
-        return this.rotations[this.rot];
-    };
 }
 
 function T(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 3;
     this.rotations = [
         [
             [0, 1],
@@ -430,19 +399,12 @@ function T(x, y) {
             [0, 1, 0]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 3);
-        return this.rotations[this.rot];
-    };
 }
 
 function S(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 1;
     this.rotations = [
         [
             [0, 1, 1],
@@ -455,19 +417,12 @@ function S(x, y) {
             [0, 1]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 1);
-        return this.rotations[this.rot];
-    };
 }
 
 function Z(x, y) {
-
     Block.call(this, x, y);
-
+    this.nr_rot = 1;
     this.rotations = [
         [
             [1, 1, 0],
@@ -480,11 +435,5 @@ function Z(x, y) {
             [1, 0]
         ]
     ];
-
     this.shape = this.rotations[this.rot];
-
-    this.rotate = function() {
-        this.rot = Block.prototype.rotate(this.rot, 1);
-        return this.rotations[this.rot];
-    };
 }
