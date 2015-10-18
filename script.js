@@ -5,13 +5,13 @@ var board = new Board();
 var block = RandomBlock(0, 8);
 var next_block = RandomBlock(0, 0);
 
-document.getElementById("score").innerHTML = board.score;
-
 game.draw(block);
 game.draw_next(next_block);
 
-window.addEventListener("keydown", check, false);
+updateHighScore();
+updateScore();
 
+window.addEventListener("keydown", check, false);
 var timer = setInterval(onTimerTick, 500);
 
 //called every 0.5 seconds
@@ -30,7 +30,7 @@ function blockfall() {
         checkandclearlines(board);
 
         board.score += 10;
-        document.getElementById("score").innerHTML = board.score;
+        updateScore();
 
         //spawn the next block and create a new next block
         block = next_block;
@@ -49,6 +49,7 @@ function blockfall() {
             clearInterval(timer);
             window.removeEventListener("keydown", check);
             drawPauseScreen("GAME OVER");
+            updateHighScore();
             window.addEventListener("keydown", waitForReset);
         }
     }
@@ -60,6 +61,20 @@ function blockfall() {
     }
 }
 
+function updateScore() {
+    document.getElementById("score").innerHTML = board.score;
+}
+
+function updateHighScore() {
+    var highScore = localStorage.getItem('high-score');
+    if (highScore === null) {
+        highScore = 0;
+    }
+    highScore = Math.max(highScore, board.score);
+    localStorage.setItem('high-score', highScore)
+    document.getElementById("high-score").innerText = highScore;
+}
+
 // resets game when space bar is pressed
 function waitForReset(e) {
     if (e.keyCode == "32") {
@@ -67,7 +82,7 @@ function waitForReset(e) {
         board = new Board();
         block = RandomBlock(0, 8);
         next_block = RandomBlock(0, 0);
-        document.getElementById("score").innerHTML = board.score;
+        updateScore();
 
         var ctx = $("canvas.canvas1")[0].getContext("2d");
         var ctx2 = $("canvas.canvas2")[0].getContext("2d");

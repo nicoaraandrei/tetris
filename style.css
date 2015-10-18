@@ -24,12 +24,16 @@ canvas {
     clear: both;
 }
 
-#score {
-    color: white;
+.score {
+    color: #E6E6FA;
     font-size: 30px;
     font-weight: 900;
     font-family: Helvetica, Arial;
     margin: 10px 0;
     word-wrap: break-word;
     width: 80px;
+}
+
+.high-score {
+    width: auto;
 }
