@@ -10,7 +10,7 @@ document.getElementById("score").innerHTML = board.score;
 game.draw(block);
 game.draw_next(next_block);
 
-window.addEventListener("keydown", this.check, false);
+window.addEventListener("keydown", check, false);
 
 var timer = setInterval(onTimerTick, 500);
 
@@ -48,7 +48,7 @@ function blockfall() {
             //if it is then it's game over
             clearInterval(timer);
             window.removeEventListener("keydown", check);
-            drawLosingScreen();
+            drawPauseScreen("GAME OVER");
             window.addEventListener("keydown", waitForReset);
         }
     }
@@ -58,27 +58,6 @@ function blockfall() {
         block.down();
         game.draw(block);
     }
-}
-
-function drawLosingScreen() {
-    var ctx = $("canvas.canvas1")[0].getContext("2d");
-    var ctx2 = $("canvas.canvas2")[0].getContext("2d");
-    ctx.save();
-    // dim canvas
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx2.globalAlpha = 0.5;
-    ctx2.fillStyle = 'black';
-    ctx2.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    // display game over text
-    ctx.globalAlpha = 1;
-    ctx.font = "bold 40px Arial";
-    ctx.fillStyle = 'red';
-    var x = ctx.canvas.width / 2 - 125;
-    var y = ctx.canvas.height / 2;
-    ctx.fillText("GAME OVER", x, y);
-    ctx.restore();
 }
 
 // resets game when space bar is pressed
@@ -99,7 +78,7 @@ function waitForReset(e) {
         game.draw_next(next_block);
 
         window.removeEventListener("keydown", waitForReset);
-        window.addEventListener("keydown", this.check, false);
+        window.addEventListener("keydown", check, false);
 
         timer = setInterval(onTimerTick, 500);
     }
@@ -164,9 +143,66 @@ function check(e) {
 
     //if the user presses down
     if (e.keyCode == "40") {
-        //execute the blockfall function
         blockfall();
     }
+
+    // user pressed space bar
+    if (e.keyCode == "32") {
+        var boundWait;
+        pauseGame();
+    }
+}
+
+function pauseGame() {
+    clearInterval(timer);
+    window.removeEventListener("keydown", check);
+
+    var ctx = $("canvas.canvas1")[0].getContext("2d");
+    var ctx2 = $("canvas.canvas2")[0].getContext("2d");
+    var save1 = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var save2 = ctx2.getImageData(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+
+    boundWait = waitForResume.bind(this, save1, save2);
+    window.addEventListener("keydown", boundWait);
+
+    drawPauseScreen("GAME PAUSED");
+}
+
+function waitForResume(save1, save2, e) {
+    if (e.keyCode == "32") {
+        var ctx = $("canvas.canvas1")[0].getContext("2d");
+        var ctx2 = $("canvas.canvas2")[0].getContext("2d");
+
+        ctx.putImageData(save1, 0, 0);
+        ctx2.putImageData(save2, 0, 0);
+
+        window.removeEventListener("keydown", boundWait);
+        window.addEventListener("keydown", check);
+
+        timer = setInterval(onTimerTick, 500);
+    }
+}
+
+function drawPauseScreen(text) {
+    var ctx = $("canvas.canvas1")[0].getContext("2d");
+    var ctx2 = $("canvas.canvas2")[0].getContext("2d");
+    ctx.save();
+    // dim canvas
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx2.globalAlpha = 0.5;
+    ctx2.fillStyle = 'black';
+    ctx2.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    // display game over text
+    ctx.globalAlpha = 1;
+    ctx.font = "bold 40px Arial";
+    ctx.fillStyle = 'red';
+    var textWidth = text.length * 27;
+    var x = ctx.canvas.width / 2 - textWidth / 2;
+    var y = ctx.canvas.height / 2;
+    ctx.fillText(text, x, y);
+    ctx.restore();
 }
 
 //every 0.5 sec execute the blockfall function

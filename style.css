@@ -1,3 +1,7 @@
+body {
+    background-color: #051231;
+}
+
 canvas {
     background-color: #E6E6FA;
 }
@@ -26,4 +30,6 @@ canvas {
     font-weight: 900;
     font-family: Helvetica, Arial;
     margin: 10px 0;
+    word-wrap: break-word;
+    width: 80px;
 }
