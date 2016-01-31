@@ -31,6 +31,7 @@ function blockfall() {
 
         board.score += 10;
         updateScore();
+        updateHighScore();
 
         //spawn the next block and create a new next block
         block = next_block;
